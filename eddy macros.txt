@@ -1,0 +1,190 @@
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+[gcode_macro G32]
+# rename_existing: G32_ORIGINAL
+description: Home all axes, perform QGL, home Z again, create bed mesh and park
+gcode:
+    BED_MESH_CLEAR                           ; vymaž starý mesh (vždy na začátku)
+    G28                                      ; home X Y Z (klasické homing – eddy se nepoužívá pro Z homing)
+    # QGL – zvýš HORIZONTAL_MOVE_Z na 3–5 mm, pokud máš eddy error při nízkém Z
+    QUAD_GANTRY_LEVEL HORIZONTAL_MOVE_Z=4    ; nebo 3–5 mm podle tvého setupu (vyšší = bezpečnější, pomalejší)
+    ENDHOMING
+    
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+[gcode_macro ENDHOMING]
+gcode:
+    # Zjistíme aktuální teplotu Eddy cívky
+    {% set eddy_temp = printer["temperature_probe btt_eddy"].temperature|float(0) %}
+    { action_respond_info("Teplota Eddy cívky před tiskem: " ~ eddy_temp ~ " °C") }
+
+    # Jediná proměnná, kterou měníš – přičítá se ke každému offsetu
+    # čím vyšší je hodnota fine_tune, tím je tryska dál od bedu
+    {% set fine_tune = 0.06 %}      # ← tady změň hodnotu (např. -0.01, +0.005 atd.)
+
+    # po QGL znovu home Z (důležité – QGL může změnit Z referenci)
+    G28 Z
+        
+    # Offset podle teploty Eddy – po 1 °C
+        {% if eddy_temp < 35 %}
+                {% set ftune = -0.329 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1 # pod 35 °C
+        {% elif eddy_temp >= 35 and eddy_temp < 36 %}
+                {% set ftune = -0.320 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 36 and eddy_temp < 37 %}
+                {% set ftune = -0.311 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 37 and eddy_temp < 38 %}
+                {% set ftune = -0.302 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 38 and eddy_temp < 39 %}
+                {% set ftune = -0.293 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 39 and eddy_temp < 40 %}
+                {% set ftune = -0.284 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 40 and eddy_temp < 41 %}
+                {% set ftune = -0.275 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 41 and eddy_temp < 42 %}
+                {% set ftune = -0.266 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 42 and eddy_temp < 43 %}
+                {% set ftune = -0.257 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 43 and eddy_temp < 44 %}
+                {% set ftune = -0.248 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 44 and eddy_temp < 45 %}
+                {% set ftune = -0.239 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 45 and eddy_temp < 46 %}
+                {% set ftune = -0.230 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 46 and eddy_temp < 47 %}
+                {% set ftune = -0.221 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 47 and eddy_temp < 48 %}
+                {% set ftune = -0.212 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 48 and eddy_temp < 49 %}
+                {% set ftune = -0.203 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 49 and eddy_temp < 50 %}
+                {% set ftune = -0.194 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 50 and eddy_temp < 51 %}
+                {% set ftune = -0.185 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 51 and eddy_temp < 52 %}
+                {% set ftune = -0.176 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 52 and eddy_temp < 53 %}
+                {% set ftune = -0.167 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 53 and eddy_temp < 54 %}
+                {% set ftune = -0.158 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 54 and eddy_temp < 55 %}
+                {% set ftune = -0.149 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 55 and eddy_temp < 56 %}
+                {% set ftune = -0.140 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 56 and eddy_temp < 57 %}
+                {% set ftune = -0.131 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 57 and eddy_temp < 58 %}
+                {% set ftune = -0.122 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 58 and eddy_temp < 59 %}
+                {% set ftune = -0.113 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 59 and eddy_temp < 60 %}
+                {% set ftune = -0.104 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 60 and eddy_temp < 61 %}
+                {% set ftune = -0.095 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 61 and eddy_temp < 62 %}
+                {% set ftune = -0.086 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 62 and eddy_temp < 63 %}
+                {% set ftune = -0.077 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 63 and eddy_temp < 64 %}
+                {% set ftune = -0.068 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 64 and eddy_temp < 65 %}
+                {% set ftune = -0.059 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 65 and eddy_temp < 66 %}
+                {% set ftune = -0.050 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 66 and eddy_temp < 67 %}
+                {% set ftune = -0.041 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 67 and eddy_temp < 68 %}
+                {% set ftune = -0.032 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 68 and eddy_temp < 69 %}
+                {% set ftune = -0.023 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 69 and eddy_temp < 70 %}
+                {% set ftune = -0.014 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 70 and eddy_temp < 71 %}
+                {% set ftune = -0.005 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 71 and eddy_temp < 72 %}
+                {% set ftune = +0.004 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 72 and eddy_temp < 73 %}
+                {% set ftune = +0.013 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 73 and eddy_temp < 74 %}
+                {% set ftune = +0.022 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 74 and eddy_temp < 75 %}
+                {% set ftune = +0.031 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 75 and eddy_temp < 76 %}
+                {% set ftune = +0.040 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 76 and eddy_temp < 77 %}
+                {% set ftune = +0.049 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 77 and eddy_temp < 78 %}
+                {% set ftune = +0.058 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 78 and eddy_temp < 79 %}
+                {% set ftune = +0.067 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% elif eddy_temp >= 79 and eddy_temp < 80 %}
+                {% set ftune = +0.076 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1
+        {% else %}
+                {% set ftune = +0.085 + fine_tune %}
+                SET_GCODE_OFFSET Z={ftune} MOVE=1 # 80 °C a výš
+        {% endif %}
+
+    { action_respond_info("Aplikovaný Z_OFFSET by měl být: " ~ ftune|string ~ " mm") }
+   
+    # malý wait – eddy a gantry se ustálí (doporučeno u eddy)
+    G4 P2000                                 ; 2 sekundy čekání
+    
+    # Bed mesh – eddy je rychlý, můžeš přidat vyšší počet bodů nebo adaptive
+    BED_MESH_CALIBRATE                       ; standardní mesh
+
+    # Volitelně: ulož mesh do profilu (pokud chceš více profilů)
+    # BED_MESH_PROFILE SAVE=default
+
+# Park toolheadu na bezpečné místo (zabrání nárazu při dalším startu)
+#    {% if printer.configfile.settings.printer.max_velocity > 300 %}
+#        G0 X{ printer.toolhead.axis_maximum.x / 2 } Y{ printer.toolhead.axis_maximum.y / 2 } Z30 F{ printer.toolhead.max_velocity * 60 }
+#    {% else %}
+#        G0 X{ printer.toolhead.axis_maximum.x / 2 } Y{ printer.toolhead.axis_maximum.y / 2 } Z30 F18000
+#    {% endif %}
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------
